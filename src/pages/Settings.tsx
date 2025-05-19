@@ -19,6 +19,7 @@ import { AlertTriangle, Check, Loader2, RefreshCw, Server, Shield } from 'lucide
 const proxmoxSchema = z.object({
   apiUrl: z.string().url("Must be a valid URL"),
   username: z.string().optional(),
+  password: z.string().optional(), // Added password to the schema
   tokenName: z.string().optional(),
   token: z.string().optional(),
   verifySSL: z.boolean().default(false),
@@ -47,6 +48,7 @@ const Settings = () => {
     defaultValues: {
       apiUrl: '',
       username: '',
+      password: '',
       tokenName: '',
       token: '',
       verifySSL: false,
@@ -65,6 +67,7 @@ const Settings = () => {
         reset({
           apiUrl: config.apiUrl,
           username: config.username || '',
+          password: '', // Password is not returned from API
           tokenName: config.tokenName || '',
           token: config.token || '',
           verifySSL: config.verifySSL,
@@ -103,8 +106,8 @@ const Settings = () => {
       } else {
         config.username = values.username;
         // Password is only included during initial setup or when changed
-        if (watch('password')) {
-          config.password = watch('password');
+        if (values.password) {
+          config.password = values.password;
         }
       }
       
@@ -142,8 +145,8 @@ const Settings = () => {
       } else {
         testConfig.username = values.username;
         // Include password if provided
-        if (watch('password')) {
-          testConfig.password = watch('password');
+        if (values.password) {
+          testConfig.password = values.password;
         }
       }
       
@@ -299,7 +302,11 @@ const Settings = () => {
                               id="password"
                               type="password"
                               placeholder="Leave empty to keep existing password"
+                              {...register('password')}
                             />
+                            {errors.password && (
+                              <p className="text-sm text-destructive">{errors.password.message}</p>
+                            )}
                           </div>
                         </div>
                       )}

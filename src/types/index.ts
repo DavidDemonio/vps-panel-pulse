@@ -113,7 +113,7 @@ export interface MetricPoint {
 export interface ProxmoxConfig {
   apiUrl: string;
   username?: string;
-  password?: string;
+  password?: string;  // Added password field
   token?: string;
   tokenName?: string;
   verifySSL: boolean;
