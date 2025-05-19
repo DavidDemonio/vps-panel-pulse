@@ -6,14 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/contexts/AuthContext';
-import { useToast } from '@/components/ui/use-toast';
+import { toast } from 'sonner';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { login, isAuthenticated } = useAuth();
-  const { toast } = useToast();
 
   // Redirect if already authenticated
   if (isAuthenticated) {
@@ -24,11 +23,7 @@ const Login = () => {
     e.preventDefault();
     
     if (!email || !password) {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Please enter both email and password',
-      });
+      toast.error('Please enter both email and password');
       return;
     }
     

@@ -23,6 +23,52 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 
+// Mock data for development
+const MOCK_SERVERS: Server[] = [
+  {
+    id: '1',
+    name: 'Web Server',
+    status: 'running',
+    ipAddress: '192.168.1.100',
+    node: 'node01',
+    osTemplate: 'ubuntu-22.04',
+    cpu: 2,
+    memory: 4,
+    storage: 50,
+    createdAt: new Date().toISOString(),
+    userId: '1'
+  },
+  {
+    id: '2',
+    name: 'Database Server',
+    status: 'stopped',
+    ipAddress: '192.168.1.101',
+    node: 'node02',
+    osTemplate: 'debian-11',
+    cpu: 4,
+    memory: 8,
+    storage: 100,
+    createdAt: new Date().toISOString(),
+    userId: '1'
+  },
+  {
+    id: '3',
+    name: 'Mail Server',
+    status: 'failed',
+    ipAddress: '192.168.1.102',
+    node: 'node01',
+    osTemplate: 'centos-8',
+    cpu: 2,
+    memory: 4,
+    storage: 40,
+    createdAt: new Date().toISOString(),
+    userId: '1'
+  }
+];
+
+// For development: check if we should use mock data
+const USE_MOCK_API = true; // Set to false when real API is available
+
 const Servers = () => {
   const [servers, setServers] = useState<Server[]>([]);
   const [filteredServers, setFilteredServers] = useState<Server[]>([]);
@@ -32,6 +78,14 @@ const Servers = () => {
   const fetchServers = async () => {
     setIsLoading(true);
     try {
+      if (USE_MOCK_API) {
+        // Use mock data
+        setServers(MOCK_SERVERS);
+        setFilteredServers(MOCK_SERVERS);
+        setIsLoading(false);
+        return;
+      }
+      
       const data = await getServers();
       setServers(data);
       setFilteredServers(data);
@@ -64,6 +118,35 @@ const Servers = () => {
   }, [searchTerm, servers]);
 
   const handleServerAction = async (serverId: string, action: 'start' | 'stop' | 'restart') => {
+    if (USE_MOCK_API) {
+      // Mock server action
+      const updatedServers = servers.map(server => {
+        if (server.id === serverId) {
+          let newStatus: string;
+          switch (action) {
+            case 'start':
+              newStatus = 'running';
+              break;
+            case 'stop':
+              newStatus = 'stopped';
+              break;
+            case 'restart':
+              newStatus = 'running';
+              break;
+            default:
+              newStatus = server.status;
+          }
+          return { ...server, status: newStatus };
+        }
+        return server;
+      });
+      
+      setServers(updatedServers);
+      setFilteredServers(updatedServers);
+      toast.success(`Server ${action} requested successfully`);
+      return;
+    }
+    
     const actionMap = {
       start: startServer,
       stop: stopServer,
