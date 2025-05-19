@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -36,7 +35,8 @@ const MOCK_SERVERS: Server[] = [
     memory: 4,
     storage: 50,
     createdAt: new Date().toISOString(),
-    userId: '1'
+    userId: '1',
+    vmid: 101
   },
   {
     id: '2',
@@ -49,7 +49,8 @@ const MOCK_SERVERS: Server[] = [
     memory: 8,
     storage: 100,
     createdAt: new Date().toISOString(),
-    userId: '1'
+    userId: '1',
+    vmid: 102
   },
   {
     id: '3',
@@ -62,7 +63,8 @@ const MOCK_SERVERS: Server[] = [
     memory: 4,
     storage: 40,
     createdAt: new Date().toISOString(),
-    userId: '1'
+    userId: '1',
+    vmid: 103
   }
 ];
 
@@ -122,7 +124,7 @@ const Servers = () => {
       // Mock server action
       const updatedServers = servers.map(server => {
         if (server.id === serverId) {
-          let newStatus: string;
+          let newStatus: 'running' | 'stopped' | 'failed' = server.status;
           switch (action) {
             case 'start':
               newStatus = 'running';
@@ -133,8 +135,6 @@ const Servers = () => {
             case 'restart':
               newStatus = 'running';
               break;
-            default:
-              newStatus = server.status;
           }
           return { ...server, status: newStatus };
         }

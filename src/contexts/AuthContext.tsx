@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User } from '@/types';
 import { getCurrentUser, login as apiLogin, logout as apiLogout } from '@/lib/api';
@@ -11,7 +10,6 @@ const MOCK_USER: User = {
   name: 'David Torres',
   role: 'admin',
   createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
 };
 
 interface AuthContextType {
