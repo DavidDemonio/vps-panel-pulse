@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -33,7 +32,7 @@ import { toast } from 'sonner';
 import { 
   ServerIcon, 
   Cpu, 
-  Memory, 
+  Database, 
   HardDrive, 
   Globe, 
   Check, 
@@ -367,7 +366,7 @@ const NewServer = () => {
                               <Cpu className="mr-2 h-4 w-4" /> {plan.cpu} vCPUs
                             </li>
                             <li className="flex items-center">
-                              <Memory className="mr-2 h-4 w-4" /> {plan.memory} GB RAM
+                              <Database className="mr-2 h-4 w-4" /> {plan.memory} GB RAM
                             </li>
                             <li className="flex items-center">
                               <HardDrive className="mr-2 h-4 w-4" /> {plan.storage} GB SSD
@@ -508,7 +507,7 @@ const NewServer = () => {
                           {customPlan ? cpu : plans.find(p => p.id === selectedPlan)?.cpu || 1} vCPUs
                         </Badge>
                         <Badge variant="outline" className="flex items-center gap-1">
-                          <Memory className="h-3 w-3" />
+                          <Database className="h-3 w-3" />
                           {customPlan ? memory : plans.find(p => p.id === selectedPlan)?.memory || 1} GB RAM
                         </Badge>
                         <Badge variant="outline" className="flex items-center gap-1">

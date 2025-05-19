@@ -82,7 +82,7 @@ const Servers = () => {
 
   const renderStatusBadge = (status: string) => {
     const statusConfig = {
-      running: { variant: 'success' as const, label: 'Running' },
+      running: { variant: 'default' as const, label: 'Running' },
       stopped: { variant: 'secondary' as const, label: 'Stopped' },
       failed: { variant: 'destructive' as const, label: 'Failed' }
     };

@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import {
   Card,
@@ -299,7 +298,7 @@ const Billing = () => {
               <CardFooter className="flex flex-col gap-4">
                 <div className="rounded border border-border p-4 w-full">
                   <PayPalScriptProvider options={{ 
-                    "client-id": "test",
+                    "clientId": "test",
                     currency: "USD",
                     intent: "capture",
                   }}>
