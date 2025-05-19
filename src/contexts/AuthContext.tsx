@@ -1,3 +1,4 @@
+
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User } from '@/types';
 import { getCurrentUser, login as apiLogin, logout as apiLogout } from '@/lib/api';
@@ -18,6 +19,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  refreshUser: () => Promise<void>; // Added refreshUser method
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -101,6 +103,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsLoading(false);
     }
   };
+
+  // Added refreshUser method implementation
+  const refreshUser = async () => {
+    setIsLoading(true);
+    try {
+      if (USE_MOCK_AUTH) {
+        // In mock mode, we can just use the current user data
+        // or reload it from localStorage
+        const savedUser = localStorage.getItem('mock_user');
+        if (savedUser) {
+          setUser(JSON.parse(savedUser));
+        }
+        setIsLoading(false);
+        return;
+      }
+
+      // In real API mode, fetch fresh user data
+      const userData = await getCurrentUser();
+      setUser(userData);
+    } catch (error) {
+      console.error('User refresh failed', error);
+      // Don't reset user on refresh failure
+    } finally {
+      setIsLoading(false);
+    }
+  };
   
   return (
     <AuthContext.Provider
@@ -110,6 +138,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAuthenticated: !!user,
         login,
         logout,
+        refreshUser, // Added refreshUser to the context value
       }}
     >
       {children}
