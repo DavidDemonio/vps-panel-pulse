@@ -1,4 +1,3 @@
-
 import { toast } from '@/components/ui/sonner';
 import { 
   Server, 
@@ -8,7 +7,8 @@ import {
   OsTemplate,
   Plan,
   Invoice,
-  Transaction 
+  Transaction,
+  ProxmoxConfig 
 } from '@/types';
 
 // Set this in the setup script or load from env
@@ -216,3 +216,103 @@ export async function deleteUser(id: string): Promise<void> {
     method: 'DELETE',
   });
 }
+
+// Proxmox Configuration
+export async function getProxmoxConfig(): Promise<ProxmoxConfig> {
+  // For development: check if we should use mock data
+  if (USE_MOCK_API) {
+    // Return mock config from localStorage if available
+    const savedConfig = localStorage.getItem('mock_proxmox_config');
+    if (savedConfig) {
+      return JSON.parse(savedConfig);
+    }
+    return {
+      apiUrl: 'https://proxmox.example.com:8006/api2/json',
+      username: 'root@pam',
+      token: '',
+      tokenName: '',
+      nodeList: ['pve1', 'pve2'],
+      verifySSL: false
+    };
+  }
+  
+  return fetchWithAuth('/settings/proxmox');
+}
+
+export async function saveProxmoxConfig(config: ProxmoxConfig): Promise<ProxmoxConfig> {
+  // For development: check if we should use mock data
+  if (USE_MOCK_API) {
+    // Save mock config to localStorage
+    localStorage.setItem('mock_proxmox_config', JSON.stringify(config));
+    toast.success('Proxmox configuration saved successfully');
+    return config;
+  }
+  
+  return fetchWithAuth('/settings/proxmox', {
+    method: 'POST',
+    body: JSON.stringify(config),
+  });
+}
+
+export async function testProxmoxConnection(config: ProxmoxConfig): Promise<{ success: boolean; message: string }> {
+  // For development: check if we should use mock data
+  if (USE_MOCK_API) {
+    // Simulate API response
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        if (config.apiUrl && (config.token || config.username)) {
+          resolve({ success: true, message: 'Connection successful!' });
+        } else {
+          resolve({ success: false, message: 'Invalid configuration' });
+        }
+      }, 1000);
+    });
+  }
+  
+  return fetchWithAuth('/settings/proxmox/test', {
+    method: 'POST',
+    body: JSON.stringify(config),
+  });
+}
+
+export async function syncProxmoxNodes(): Promise<Node[]> {
+  // For development: check if we should use mock data
+  if (USE_MOCK_API) {
+    // Simulate API response
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve([
+          {
+            id: 'pve1',
+            name: 'pve1',
+            status: 'online',
+            cpuTotal: 8,
+            cpuUsed: 2,
+            memoryTotal: 16384,
+            memoryUsed: 4096,
+            storageTotal: 1024,
+            storageUsed: 256
+          },
+          {
+            id: 'pve2',
+            name: 'pve2',
+            status: 'online',
+            cpuTotal: 4,
+            cpuUsed: 1,
+            memoryTotal: 8192,
+            memoryUsed: 2048,
+            storageTotal: 512,
+            storageUsed: 128
+          }
+        ]);
+      }, 1000);
+    });
+  }
+  
+  return fetchWithAuth('/settings/proxmox/sync-nodes', {
+    method: 'POST',
+  });
+}
+
+// For development: check if we should use mock data
+const USE_MOCK_API = true; // Set to false when real API is available

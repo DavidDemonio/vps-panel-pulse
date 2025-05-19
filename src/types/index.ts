@@ -109,3 +109,13 @@ export interface MetricPoint {
   timestamp: string;
   value: number;
 }
+
+export interface ProxmoxConfig {
+  apiUrl: string;
+  username?: string;
+  password?: string;
+  token?: string;
+  tokenName?: string;
+  verifySSL: boolean;
+  nodeList: string[];
+}
